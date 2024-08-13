@@ -28,6 +28,13 @@ public class CustomResponse<T> {
                 .build();
     }
 
+    public static <T> CustomResponse<T> OK() {
+        return (CustomResponse<T>) CustomResponse.builder()
+                .returnCode(HttpStatus.OK.value())
+                .message(HttpStatus.OK.name())
+                .build();
+    }
+
     public static CustomResponse ERROR(ErrorCode code) {
         return CustomResponse.builder()
                 .returnCode(code.getReturnCode())
@@ -39,6 +46,13 @@ public class CustomResponse<T> {
         return CustomResponse.builder()
                 .returnCode(ErrorCode.SERVER_ERROR.getReturnCode())
                 .message(ErrorCode.SERVER_ERROR.getMessage())
+                .build();
+    }
+
+    public static CustomResponse ERROR(int code, String message) {
+        return CustomResponse.builder()
+                .returnCode(code)
+                .message(message)
                 .build();
     }
 
