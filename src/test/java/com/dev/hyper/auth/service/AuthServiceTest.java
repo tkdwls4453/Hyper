@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 
@@ -25,6 +26,8 @@ class AuthServiceTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Nested
     @DisplayName("signup 서비스 테스트")
     class signUp{
@@ -73,10 +76,13 @@ class AuthServiceTest {
             List<User> result = userRepository.findAll();
 
             assertThat(result).hasSize(1)
-                    .extracting("email", "password", "name")
+                    .extracting("email", "name")
                     .containsExactlyInAnyOrder(
-                            tuple(email, password, name)
+                            tuple(email, name)
                     );
+
+            boolean isMatched = bCryptPasswordEncoder.matches(password, result.get(0).getPassword());
+            assertThat(isMatched).isTrue();
         }
     }
 }
