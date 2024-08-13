@@ -23,12 +23,13 @@ public record SignUpRequest(
 
         String role
 ) {
-        public User toEntity() {
+        public User toEntity(String password) {
                 Role role = this.role == null ? Role.BUYER : Role.valueOf(this.role);
+
 
                 return User.builder()
                         .email(this.email)
-                        .password(this.password)
+                        .password(password)
                         .name(this.name)
                         .role(role)
                         .build();
