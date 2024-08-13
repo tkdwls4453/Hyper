@@ -1,0 +1,22 @@
+### auth
+
+### 회원가입 테스트
+POST http://localhost:8080/open-api/auth/signup
+Content-Type: application/json
+
+{
+  "email": "test@naver.com",
+  "password": "testafwf123!",
+  "name": "test",
+  "role": "ADMIN"
+}
+
+### 로그인 테스트
+POST http://localhost:8080/open-api/auth/login
+Content-Type: application/json
+
+
+{
+"email": "test@naver.com",
+"password": "testafwf123!"
+}
