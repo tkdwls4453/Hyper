@@ -1,11 +1,14 @@
 package com.dev.hyper.common.response;
 
+import com.dev.hyper.common.error.ErrorCode;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class CustomResponse <T>{
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class CustomResponse<T> {
     private int returnCode;
     private String message;
     private T data;
@@ -17,11 +20,26 @@ public class CustomResponse <T>{
         this.data = data;
     }
 
-    public static <T> CustomResponse<T> OK(T data){
+    public static <T> CustomResponse<T> OK(T data) {
         return (CustomResponse<T>) CustomResponse.builder()
                 .returnCode(HttpStatus.OK.value())
                 .message(HttpStatus.OK.name())
                 .data(data)
                 .build();
     }
+
+    public static CustomResponse ERROR(ErrorCode code) {
+        return CustomResponse.builder()
+                .returnCode(code.getReturnCode())
+                .message(code.getMessage())
+                .build();
+    }
+
+    public static CustomResponse ERROR(Exception e) {
+        return CustomResponse.builder()
+                .returnCode(ErrorCode.SERVER_ERROR.getReturnCode())
+                .message(ErrorCode.SERVER_ERROR.getMessage())
+                .build();
+    }
+
 }
