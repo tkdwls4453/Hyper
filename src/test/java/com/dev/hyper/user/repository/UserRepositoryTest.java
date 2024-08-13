@@ -39,4 +39,23 @@ class UserRepositoryTest {
         // Then
         assertThat(result).isTrue();
     }
+
+    @Test
+    @DisplayName("existsByEmail 테스트")
+    void findByEmail(){
+        // Given
+        userRepository.save(User.builder()
+                .email(email)
+                .password(password)
+                .name(name)
+                .role(Role.BUYER)
+                .build());
+
+        // When
+        User result = userRepository.findByEmail(email).orElse(null);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.getEmail()).isEqualTo(email);
+    }
 }
