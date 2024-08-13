@@ -1,4 +1,4 @@
-package com.dev.hyper.exeptionHandler;
+package com.dev.hyper.common.exeptionHandler;
 
 import com.dev.hyper.common.response.CustomResponse;
 import lombok.extern.slf4j.Slf4j;
