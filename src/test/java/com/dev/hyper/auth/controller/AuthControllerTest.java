@@ -3,6 +3,7 @@ package com.dev.hyper.auth.controller;
 import com.dev.hyper.auth.dto.request.SignUpRequest;
 import com.dev.hyper.auth.service.AuthService;
 import com.dev.hyper.common.config.SecurityConfig;
+import com.dev.hyper.common.util.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -30,6 +31,9 @@ class AuthControllerTest {
 
     @MockBean
     private AuthService authService;
+
+    @MockBean
+    private JwtUtil jwtUtil;
 
     @Autowired
     private ObjectMapper objectMapper;
