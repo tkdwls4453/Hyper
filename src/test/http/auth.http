@@ -8,7 +8,7 @@ Content-Type: application/json
   "email": "test@naver.com",
   "password": "testafwf123!",
   "name": "test",
-  "role": "ADMIN"
+  "role": "SELLER"
 }
 
 ### 로그인 테스트
@@ -19,4 +19,15 @@ Content-Type: application/json
 {
 "email": "test@naver.com",
 "password": "testafwf123!"
+}
+
+
+### 인증 테스트
+POST http://localhost:8080/api/store
+Content-Type: multipart/form-data
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RAbmF2ZXIuY29tIiwicm9sZSI6IlNFTExFUiIsImlhdCI6MTcyMzU4ODI5MSwiZXhwIjoxNzIzNjc0NjkxfQ.QfG2AXau10oQVaBggbFbwlWrUNf6Zqhjr3EJjobUf9A
+
+{
+"name": "test",
+"description": "description test"
 }

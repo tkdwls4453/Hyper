@@ -49,6 +49,7 @@ public class SecurityConfig {
                 .httpBasic((auth) -> auth.disable())
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers( "/open-api/**").permitAll()
+                        .requestMatchers("/api/store").hasRole("SELLER")
                 )
                 .addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class)
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, objectMapper), UsernamePasswordAuthenticationFilter.class)

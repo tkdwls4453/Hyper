@@ -1,11 +1,8 @@
 package com.dev.hyper.user.repository;
 
-import com.dev.hyper.auth.dto.request.SignUpRequest;
 import com.dev.hyper.user.domain.Role;
 import com.dev.hyper.user.domain.User;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -41,7 +38,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    @DisplayName("existsByEmail 테스트")
+    @DisplayName("findByEmail 테스트")
     void findByEmail(){
         // Given
         userRepository.save(User.builder()
