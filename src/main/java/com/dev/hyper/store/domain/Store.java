@@ -1,9 +1,12 @@
 package com.dev.hyper.store.domain;
 
+import com.dev.hyper.user.domain.User;
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @NoArgsConstructor
 @Entity
 @Table(name = "stores")
@@ -24,11 +27,21 @@ public class Store {
 
     private String logo;
 
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+
     @Builder
     private Store(String name, String description, boolean isAccepted, String logo) {
         this.name = name;
         this.description = description;
         this.isAccepted = isAccepted;
         this.logo = logo;
+    }
+
+    public void updateUser(User user) {
+        this.user = user;
     }
 }
