@@ -6,6 +6,7 @@ import com.dev.hyper.common.error.ErrorCode;
 import com.dev.hyper.user.domain.Role;
 import com.dev.hyper.user.domain.User;
 import com.dev.hyper.user.repository.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,11 @@ class AuthServiceTest {
         final String email = "test@naver.com";
         final String password = "fkjbkafb!12";
         final String name = "test";
+
+        @AfterEach
+        void tearDown() {
+            userRepository.deleteAllInBatch();
+        }
 
         @Test
         @DisplayName("이미 가입한 이메일로 회원가입하면 예외를 반환한다.")
