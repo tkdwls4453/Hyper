@@ -13,7 +13,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -59,7 +58,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
             signInRequest = objectMapper.readValue(messageBody, SignInRequest.class);
         } catch (IOException e) {
-            throw new CustomErrorException(ErrorCode.INVALID_SIGN_IN_REQUEST);
+            throw new CustomErrorException(ErrorCode.INVALID_SIGN_IN_REQUEST_ERROR);
         }
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(signInRequest.email(), signInRequest.password());

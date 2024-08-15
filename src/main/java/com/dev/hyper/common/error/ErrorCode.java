@@ -11,9 +11,11 @@ public enum ErrorCode {
     SERVER_ERROR(500, 500, "서버 내부 에러입니다."),
 
     // 유저 관련 에러는 1000 번대 사용
-    ALREADY_EXISTS_EMAIL(400, 1400, "이미 가입된 이메일입니다."),
-    INVALID_SIGN_IN_REQUEST(400,1401 , "잘못된 로그인 요청입니다."),
-    NOT_FOUND_USER(400, 1402, "존재하지 않는 유저입니다.")
+    ALREADY_EXISTS_EMAIL_ERROR(400, 1400, "이미 가입된 이메일입니다."),
+    INVALID_SIGN_IN_REQUEST_ERROR(400,1401 , "잘못된 로그인 요청입니다."),
+    NOT_FOUND_USER_ERROR(400, 1402, "존재하지 않는 유저입니다."),
+
+    PRODUCT_CREATION_PERMISSION_ERROR(403, 2403, "제품 생성 권한이 없습니다.")
 
     ;
 
