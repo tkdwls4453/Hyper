@@ -1,5 +1,6 @@
 package com.dev.hyper.store.domain;
 
+import com.dev.hyper.common.BaseEntity;
 import com.dev.hyper.user.domain.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "stores")
-public class Store {
+public class Store extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,5 +44,6 @@ public class Store {
 
     public void updateUser(User user) {
         this.user = user;
+        user.updateStore(this);
     }
 }
