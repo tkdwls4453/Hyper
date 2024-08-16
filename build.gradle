@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'jacoco'
     id 'org.springframework.boot' version '3.3.2'
     id 'io.spring.dependency-management' version '1.1.6'
 }
@@ -44,4 +45,36 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+
+test {
+    finalizedBy jacocoTestReport
+}
+
+// jacoco 관련 설
+jacoco {
+    toolVersion = "0.8.9"
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+        csv.required = false
+        html.required = true
+        xml.outputLocation = layout.buildDirectory.file('reports/jacoco/lms.app.xml')
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+    dependsOn test
+    finalizedBy 'jacocoTestCoverageVerification'
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.3 // 커버리지가 60% 미만이면 빌드 실패
+            }
+        }
+    }
 }
