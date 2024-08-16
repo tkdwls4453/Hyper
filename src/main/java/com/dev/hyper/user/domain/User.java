@@ -1,6 +1,7 @@
 package com.dev.hyper.user.domain;
 
 import com.dev.hyper.common.BaseEntity;
+import com.dev.hyper.product.request.UpdateProductRequest;
 import com.dev.hyper.store.domain.Store;
 import jakarta.persistence.*;
 import lombok.Builder;

@@ -15,7 +15,10 @@ public enum ErrorCode {
     INVALID_SIGN_IN_REQUEST_ERROR(400,1401 , "잘못된 로그인 요청입니다."),
     NOT_FOUND_USER_ERROR(400, 1402, "존재하지 않는 유저입니다."),
 
-    PRODUCT_CREATION_PERMISSION_ERROR(403, 2403, "제품 생성 권한이 없습니다.")
+    // 제품 관련 에러는 2000 번대 사용
+    PRODUCT_CREATION_PERMISSION_ERROR(403, 2403, "제품 생성 권한이 없습니다."),
+    PRODUCT_UPDATE_PERMISSION_ERROR(403, 2404, "제품 수정 권한이 없습니다."),
+    PRODUCT_NOT_FOUND_ERROR(404, 2405, "존재하지 않는 제품입니다.")
 
     ;
 

@@ -1,6 +1,7 @@
 package com.dev.hyper.product.domain;
 
 import com.dev.hyper.common.BaseEntity;
+import com.dev.hyper.product.request.UpdateProductRequest;
 import com.dev.hyper.store.domain.Store;
 import com.dev.hyper.user.domain.User;
 import jakarta.persistence.*;
@@ -47,5 +48,10 @@ public class Product extends BaseEntity {
 
     public void updateStore(Store store) {
         this.store = store;
+    }
+
+    public void updateInfo(UpdateProductRequest request) {
+        this.name = request.name();
+        this.description = request.description();
     }
 }
