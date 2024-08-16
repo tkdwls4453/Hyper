@@ -1,6 +1,8 @@
 package com.dev.hyper.user.domain;
 
 import com.dev.hyper.common.BaseEntity;
+import com.dev.hyper.product.request.UpdateProductRequest;
+import com.dev.hyper.store.domain.Store;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,11 +31,18 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
+    private Store store;
+
     @Builder
     private User(String email, String password, String name, Role role) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.role = role;
+    }
+
+    public void updateStore(Store store) {
+        this.store = store;
     }
 }

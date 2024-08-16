@@ -18,7 +18,7 @@ public class AuthService {
 
     public void signUp(SignUpRequest request) {
         if(userRepository.existsByEmail(request.email())){
-            throw new CustomErrorException(ErrorCode.ALREADY_EXISTS_EMAIL);
+            throw new CustomErrorException(ErrorCode.ALREADY_EXISTS_EMAIL_ERROR);
         }
 
         String encodePassword = bCryptPasswordEncoder.encode(request.password());

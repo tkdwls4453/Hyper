@@ -23,7 +23,7 @@ public class StoreService {
         // ??? 이미 컨트롤러에 들어올 때 유저 권한을 찾아서 들어오는데 여기서 다시 예외처리를 해야하나?
         User user = userRepository.findByEmail(userEmail).orElseThrow(
                 () -> {
-                    throw new CustomErrorException(ErrorCode.NOT_FOUND_USER);
+                    throw new CustomErrorException(ErrorCode.NOT_FOUND_USER_ERROR);
                 }
         );
 

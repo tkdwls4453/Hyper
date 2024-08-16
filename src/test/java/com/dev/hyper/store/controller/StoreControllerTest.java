@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -51,7 +52,7 @@ class StoreControllerTest {
                     .build();
 
             // Expected
-            mockMvc.perform(MockMvcRequestBuilders.post("/api/store")
+            mockMvc.perform(post("/api/stores")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request))
                             .with(csrf())
@@ -64,7 +65,6 @@ class StoreControllerTest {
 
         @Test
         @WithMockCustomUser(username = "test@naver.com", role = "SELLER")
-//        @WithMockUser(roles = "SELLER")
         @DisplayName("정상적인 스토어 생성을 요청하면, 200 OK를 반환한다.")
         void test1000() throws Exception {
             // Given
@@ -74,7 +74,7 @@ class StoreControllerTest {
                     .build();
 
             // Expected
-            mockMvc.perform(MockMvcRequestBuilders.post("/api/store")
+            mockMvc.perform(post("/api/stores")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request))
                             .with(csrf())
