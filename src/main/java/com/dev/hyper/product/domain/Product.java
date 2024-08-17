@@ -1,6 +1,7 @@
 package com.dev.hyper.product.domain;
 
 import com.dev.hyper.common.BaseEntity;
+import com.dev.hyper.item.Item;
 import com.dev.hyper.product.request.UpdateProductRequest;
 import com.dev.hyper.store.domain.Store;
 import com.dev.hyper.user.domain.User;
@@ -8,6 +9,9 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -33,6 +37,10 @@ public class Product extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "product")
+    private List<Item> items = new ArrayList<>();
+
 
     @Builder
     private Product(String name, String description, Store store, User user) {
