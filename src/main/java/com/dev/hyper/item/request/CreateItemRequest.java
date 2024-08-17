@@ -10,7 +10,6 @@ import static org.springframework.util.StringUtils.*;
 @Builder
 public record CreateItemRequest(
         @NotBlank(message = "색상 정보는 필수입니다.")
-
         String color,
         String size,
         int stock
