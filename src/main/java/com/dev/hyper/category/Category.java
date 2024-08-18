@@ -39,4 +39,10 @@ public class Category extends BaseEntity {
         this.parent = parentCategory;
         parentCategory.getChildren().add(this);
     }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+
 }

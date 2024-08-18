@@ -1,13 +1,11 @@
 package com.dev.hyper.category;
 
 import com.dev.hyper.category.request.CreateCategoryRequest;
+import com.dev.hyper.category.request.UpdateCategoryRequest;
 import com.dev.hyper.common.response.CustomResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +19,15 @@ public class CategoryController {
             @Valid @RequestBody CreateCategoryRequest request
     ){
         categoryService.createCategory(request);
+        return CustomResponse.OK();
+    }
+
+    @PatchMapping("/{categoryId}")
+    public CustomResponse updateCategory(
+            @Valid @RequestBody UpdateCategoryRequest request,
+            @PathVariable(name = "categoryId") Long categoryId
+    ){
+        categoryService.updateCategory(request, categoryId);
         return CustomResponse.OK();
     }
 }
