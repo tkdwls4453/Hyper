@@ -18,8 +18,13 @@ public enum ErrorCode {
     // 제품 관련 에러는 2000 번대 사용
     PRODUCT_CREATION_PERMISSION_ERROR(403, 2403, "제품 생성 권한이 없습니다."),
     PRODUCT_UPDATE_PERMISSION_ERROR(403, 2404, "제품 수정 권한이 없습니다."),
-    PRODUCT_NOT_FOUND_ERROR(404, 2405, "존재하지 않는 제품입니다.")
+    PRODUCT_NOT_FOUND_ERROR(404, 2405, "존재하지 않는 제품입니다."),
 
+    // 아이템 관련 에러는 3000 번대 사용
+    ITEM_PERMISSION_ERROR(403, 3403, "아이템 접근 권한이 없습니다."),
+    ITEM_NOT_FOUND_ERROR(404, 3404, "존재하지 않는 아이템입니다."),
+
+    INVALID_STOCK_ERROR(400, 3405, "유효하지 않는 재고량입니다."),
     ;
 
     private final int httpCode;
