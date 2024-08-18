@@ -50,4 +50,13 @@ public class ItemController {
         itemService.updateInfo(itemId, request, principal.getUsername());
         return CustomResponse.OK();
     }
+
+    @DeleteMapping("/items/{itemId}")
+    public CustomResponse deleteItem(
+            @PathVariable(name = "itemId") Long itemId,
+            @AuthenticationPrincipal UserPrincipal principal
+    ){
+        itemService.deleteItem(itemId, principal.getUsername());
+        return CustomResponse.OK();
+    }
 }

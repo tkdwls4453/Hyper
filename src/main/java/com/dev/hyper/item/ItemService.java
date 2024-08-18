@@ -75,4 +75,18 @@ public class ItemService {
 
         item.updateInfo(request);
     }
+
+    public void deleteItem(Long itemId, String email) {
+        Item item = itemRepository.findById(itemId).orElseThrow(
+                () -> {
+                    throw new CustomErrorException(ErrorCode.ITEM_NOT_FOUND_ERROR);
+                }
+        );
+
+        if(!itemRepository.existsByIdAndUserEmail(itemId, email)){
+            throw new CustomErrorException(ErrorCode.ITEM_PERMISSION_ERROR);
+        }
+
+        itemRepository.deleteById(itemId);
+    }
 }
