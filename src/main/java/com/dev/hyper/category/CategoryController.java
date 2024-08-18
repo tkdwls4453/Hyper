@@ -30,4 +30,12 @@ public class CategoryController {
         categoryService.updateCategory(request, categoryId);
         return CustomResponse.OK();
     }
+
+    @DeleteMapping("/{categoryId}")
+    public CustomResponse deleteCategory(
+            @PathVariable(name = "categoryId") Long categoryId
+    ){
+        categoryService.deleteCategory(categoryId);
+        return CustomResponse.OK();
+    }
 }

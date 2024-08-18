@@ -52,4 +52,13 @@ public class CategoryService {
         }
 
     }
+
+    public void deleteCategory(Long categoryId) {
+        if(categoryRepository.existsById(categoryId)){
+            categoryRepository.deleteById(categoryId);
+        }else{
+            throw new CustomErrorException(ErrorCode.CATEGORY_NOT_FOUND_ERROR);
+        }
+
+    }
 }
