@@ -21,7 +21,8 @@ public enum ErrorCode {
     PRODUCT_NOT_FOUND_ERROR(404, 2405, "존재하지 않는 제품입니다."),
 
     // 아이템 관련 에러는 3000 번대 사용
-    ITEM_CREATION_PERMISSION_ERROR(403, 3403, "아이템 생성 권한이 없습니다."),
+    ITEM_PERMISSION_ERROR(403, 3403, "아이템 접근 권한이 없습니다."),
+    ITEM_NOT_FOUND_ERROR(404, 3404, "존재하지 않는 아이템입니다."),
     ;
 
     private final int httpCode;

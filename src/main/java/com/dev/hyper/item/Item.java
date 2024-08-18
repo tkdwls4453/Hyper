@@ -1,11 +1,14 @@
 package com.dev.hyper.item;
 
 import com.dev.hyper.common.BaseEntity;
+import com.dev.hyper.item.request.UpdateItemRequest;
 import com.dev.hyper.product.domain.Product;
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @NoArgsConstructor
 @Entity
 @Table(name = "items")
@@ -37,5 +40,11 @@ public class Item extends BaseEntity {
     public void updateProduct(Product product) {
         this.product = product;
         product.getItems().add(this);
+    }
+
+    public void updateInfo(UpdateItemRequest request) {
+        this.color = request.color();
+        this.size = request.size();
+        this.stock = request.stock();
     }
 }
