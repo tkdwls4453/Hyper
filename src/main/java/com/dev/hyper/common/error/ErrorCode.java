@@ -25,6 +25,8 @@ public enum ErrorCode {
     ITEM_NOT_FOUND_ERROR(404, 3404, "존재하지 않는 아이템입니다."),
 
     INVALID_STOCK_ERROR(400, 3405, "유효하지 않는 재고량입니다."),
+
+    CATEGORY_NOT_FOUND_ERROR(400, 4400, "존재하지 않는 카테고리 입니다."),
     ;
 
     private final int httpCode;

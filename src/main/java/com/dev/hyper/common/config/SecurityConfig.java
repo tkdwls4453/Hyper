@@ -51,6 +51,7 @@ public class SecurityConfig {
                         .requestMatchers( "/open-api/**").permitAll()
                         .requestMatchers("/api/stores/**").hasRole("SELLER")
                         .requestMatchers("/api/products/**").hasRole("SELLER")
+                        .requestMatchers("/api/categories/**").hasRole("ADMIN")
                 )
                 .addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class)
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, objectMapper), UsernamePasswordAuthenticationFilter.class)
