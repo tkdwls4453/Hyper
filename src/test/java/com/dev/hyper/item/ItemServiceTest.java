@@ -376,6 +376,84 @@ class ItemServiceTest {
         }
     }
 
+    @Nested
+    @DisplayName("아이템 제거 테스트")
+    class deleteItem{
+        @Test
+        @DisplayName("아이템 수정 권한이 없는 유저가 아이템 삭제 요청시, 예외를 반환한다.")
+        void test1(){
+            // Given
+            User user = createUser("test@naver.com");
+            Product product = createProduct("product");
+            Item item = createItem("color", 10);
+
+            product.updateUser(user);
+            item.updateProduct(product);
+
+            User savedUser = userRepository.save(user);
+            Product savedProduct = productRepository.save(product);
+            Item savedItem = itemRepository.save(item);
+
+            // Expected
+            assertThatThrownBy(
+                    () -> {
+                        sut.deleteItem(savedItem.getId(), "email@naver.com");
+                    }
+            )
+                    .isInstanceOf(CustomErrorException.class)
+                    .hasMessage("아이템 접근 권한이 없습니다.");
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 아이템으 아이템 삭제를 요청시, 예외를 반환한다.")
+        void test2(){
+            // Given
+            User user = createUser("test@naver.com");
+            Product product = createProduct("product");
+            Item item = createItem("color", 10);
+
+            product.updateUser(user);
+            item.updateProduct(product);
+
+            User savedUser = userRepository.save(user);
+            Product savedProduct = productRepository.save(product);
+            Item savedItem = itemRepository.save(item);
+
+
+            // Expected
+            assertThatThrownBy(
+                    () -> {
+                        sut.deleteItem(savedItem.getId() + 100, savedUser.getEmail());
+                    }
+            )
+                    .isInstanceOf(CustomErrorException.class)
+                    .hasMessage("존재하지 않는 아이템입니다.");
+        }
+
+        @Test
+        @DisplayName("정상적으로 아이템 삭제를 요청하면, 아이템을 수정한다.")
+        void test1000(){
+            // Given
+            User user = createUser("test@naver.com");
+            Product product = createProduct("product");
+            Item item = createItem("color", 10);
+
+            product.updateUser(user);
+            item.updateProduct(product);
+
+            User savedUser = userRepository.save(user);
+            Product savedProduct = productRepository.save(product);
+            Item savedItem = itemRepository.save(item);
+
+            // When
+            sut.deleteItem(savedItem.getId(), user.getEmail());
+
+            // Then
+            Item result = itemRepository.findById(savedItem.getId()).orElse(null);
+
+            assertThat(result).isNull();
+        }
+    }
     private Product createProduct(String name){
         return Product.builder()
                 .name(name)
