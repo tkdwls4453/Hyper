@@ -1,6 +1,7 @@
 package com.dev.hyper.item;
 
 import com.dev.hyper.common.WithMockCustomUser;
+import com.dev.hyper.item.request.AddStockRequest;
 import com.dev.hyper.item.request.CreateItemRequest;
 import com.dev.hyper.item.request.UpdateItemRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -115,6 +116,31 @@ class ItemControllerTest {
 
             // Expected
             mockMvc.perform(patch("/api/products/items/{itemId}", 1L)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request))
+                            .with(csrf())
+                    )
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.message").value("OK"))
+                    .andDo(print());
+        }
+    }
+
+    @Nested
+    @DisplayName("아이템 재고 추가 테스트")
+    @WithMockCustomUser
+    class addStock{
+        @Test
+        @DisplayName("아이템 재고 추가 성공시, 200 OK를 반환한다..")
+        void test1() throws Exception {
+            // Given
+            AddStockRequest request = AddStockRequest.builder()
+                    .quantity(5)
+                    .build();
+
+
+            // Expected
+            mockMvc.perform(patch("/api/products/items/{itemId}/stock/add", 1L)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request))
                             .with(csrf())

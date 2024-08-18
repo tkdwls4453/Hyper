@@ -2,6 +2,7 @@ package com.dev.hyper.item;
 
 import com.dev.hyper.common.error.CustomErrorException;
 import com.dev.hyper.item.repository.ItemRepository;
+import com.dev.hyper.item.request.AddStockRequest;
 import com.dev.hyper.item.request.CreateItemRequest;
 import com.dev.hyper.item.request.UpdateItemRequest;
 import com.dev.hyper.item.response.ItemResponse;
@@ -405,7 +406,7 @@ class ItemServiceTest {
         }
 
         @Test
-        @DisplayName("존재하지 않는 아이템으 아이템 삭제를 요청시, 예외를 반환한다.")
+        @DisplayName("존재하지 않는 아이템으로 아이템 삭제를 요청시, 예외를 반환한다.")
         void test2(){
             // Given
             User user = createUser("test@naver.com");
@@ -454,6 +455,99 @@ class ItemServiceTest {
             assertThat(result).isNull();
         }
     }
+
+    @DisplayName("아이템 재고 추가 테스트")
+    @Nested
+    class addStock{
+        @Test
+        @DisplayName("아이템 수정 권한이 없는 유저가 재고 추가 요청시, 예외를 반환한다.")
+        void test1(){
+            // Given
+            User user = createUser("test@naver.com");
+            Product product = createProduct("product");
+            Item item = createItem("color", 10);
+
+            product.updateUser(user);
+            item.updateProduct(product);
+
+            User savedUser = userRepository.save(user);
+            Product savedProduct = productRepository.save(product);
+            Item savedItem = itemRepository.save(item);
+
+            AddStockRequest request = AddStockRequest.builder()
+                    .quantity(5)
+                    .build();
+
+            // Expected
+            assertThatThrownBy(
+                    () -> {
+                        sut.addStock(savedItem.getId(), request, "email@naver.com");
+                    }
+            )
+                    .isInstanceOf(CustomErrorException.class)
+                    .hasMessage("아이템 접근 권한이 없습니다.");
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 아이템의 재고 추가를 요청시, 예외를 반환한다.")
+        void test2(){
+            // Given
+            User user = createUser("test@naver.com");
+            Product product = createProduct("product");
+            Item item = createItem("color", 10);
+
+            product.updateUser(user);
+            item.updateProduct(product);
+
+            User savedUser = userRepository.save(user);
+            Product savedProduct = productRepository.save(product);
+            Item savedItem = itemRepository.save(item);
+
+            AddStockRequest request = AddStockRequest.builder()
+                    .quantity(5)
+                    .build();
+
+            // Expected
+            assertThatThrownBy(
+                    () -> {
+                        sut.addStock(savedItem.getId() + 100, request,  savedUser.getEmail());
+                    }
+            )
+                    .isInstanceOf(CustomErrorException.class)
+                    .hasMessage("존재하지 않는 아이템입니다.");
+        }
+
+        @Test
+        @DisplayName("정상적으로 재고 추가를 요청시, 예외를 반환한다.")
+        void test1000(){
+            // Given
+            User user = createUser("test@naver.com");
+            Product product = createProduct("product");
+            Item item = createItem("color", 10);
+
+            product.updateUser(user);
+            item.updateProduct(product);
+
+            User savedUser = userRepository.save(user);
+            Product savedProduct = productRepository.save(product);
+            Item savedItem = itemRepository.save(item);
+
+            AddStockRequest request = AddStockRequest.builder()
+                    .quantity(5)
+                    .build();
+
+            // When
+            sut.addStock(savedItem.getId(), request, savedUser.getEmail());
+
+            // Then
+            Item result = itemRepository.findById(savedItem.getId()).orElse(null);
+
+            assertThat(result).isNotNull();
+            assertThat(result.getStock()).isEqualTo(15);
+
+        }
+    }
+
     private Product createProduct(String name){
         return Product.builder()
                 .name(name)
