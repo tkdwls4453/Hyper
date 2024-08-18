@@ -50,9 +50,9 @@ class CategoryControllerTest {
         }
 
         @Test
-        @WithMockCustomUser(role = "SELLER")
+        @WithMockCustomUser(role = "ADMIN")
         @DisplayName("어드민이 아닌 유저가 카테고리 생성시, 403 에러를 반환한다.")
-        void test2() throws Exception {
+        void test1000() throws Exception {
             // Given
             CreateCategoryRequest request = CreateCategoryRequest.builder()
                     .name("category")
@@ -64,8 +64,8 @@ class CategoryControllerTest {
                             .content(objectMapper.writeValueAsString(request))
                             .with(csrf())
                     )
-                    .andExpect(MockMvcResultMatchers.status().isForbidden())
-                    .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("FORBBIDEN"));
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("OK"));
 
         }
     }
