@@ -1,6 +1,8 @@
 package com.dev.hyper.item;
 
 import com.dev.hyper.common.BaseEntity;
+import com.dev.hyper.common.error.CustomErrorException;
+import com.dev.hyper.common.error.ErrorCode;
 import com.dev.hyper.item.request.UpdateItemRequest;
 import com.dev.hyper.product.domain.Product;
 import jakarta.persistence.*;
@@ -50,5 +52,13 @@ public class Item extends BaseEntity {
 
     public void addStock(int quantity) {
         this.stock += quantity;
+    }
+
+    public void reduceStock(int quantity) {
+        if (quantity > this.stock) {
+            throw new CustomErrorException(ErrorCode.INVALID_STOCK_ERROR);
+        }
+
+        this.stock -= quantity;
     }
 }

@@ -23,6 +23,8 @@ public enum ErrorCode {
     // 아이템 관련 에러는 3000 번대 사용
     ITEM_PERMISSION_ERROR(403, 3403, "아이템 접근 권한이 없습니다."),
     ITEM_NOT_FOUND_ERROR(404, 3404, "존재하지 않는 아이템입니다."),
+
+    INVALID_STOCK_ERROR(400, 3405, "유효하지 않는 재고량입니다."),
     ;
 
     private final int httpCode;

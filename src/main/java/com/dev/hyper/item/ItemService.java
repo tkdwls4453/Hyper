@@ -5,6 +5,7 @@ import com.dev.hyper.common.error.ErrorCode;
 import com.dev.hyper.item.repository.ItemRepository;
 import com.dev.hyper.item.request.AddStockRequest;
 import com.dev.hyper.item.request.CreateItemRequest;
+import com.dev.hyper.item.request.ReduceStockRequest;
 import com.dev.hyper.item.request.UpdateItemRequest;
 import com.dev.hyper.item.response.ItemResponse;
 import com.dev.hyper.product.ProductRepository;
@@ -103,5 +104,19 @@ public class ItemService {
         }
 
         item.addStock(request.quantity());
+    }
+
+    public void reduceStock(Long itemId, ReduceStockRequest request, String email) {
+        Item item = itemRepository.findById(itemId).orElseThrow(
+                () -> {
+                    throw new CustomErrorException(ErrorCode.ITEM_NOT_FOUND_ERROR);
+                }
+        );
+
+        if(!itemRepository.existsByIdAndUserEmail(itemId, email)){
+            throw new CustomErrorException(ErrorCode.ITEM_PERMISSION_ERROR);
+        }
+
+        item.reduceStock(request.quantity());
     }
 }

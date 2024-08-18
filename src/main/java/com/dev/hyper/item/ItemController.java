@@ -4,6 +4,7 @@ import com.dev.hyper.auth.dto.UserPrincipal;
 import com.dev.hyper.common.response.CustomResponse;
 import com.dev.hyper.item.request.AddStockRequest;
 import com.dev.hyper.item.request.CreateItemRequest;
+import com.dev.hyper.item.request.ReduceStockRequest;
 import com.dev.hyper.item.request.UpdateItemRequest;
 import com.dev.hyper.item.response.ItemResponse;
 import jakarta.validation.Valid;
@@ -68,6 +69,16 @@ public class ItemController {
             @AuthenticationPrincipal UserPrincipal principal
     ) {
         itemService.addStock(itemId, request, principal.getUsername());
+        return CustomResponse.OK();
+    }
+
+    @PatchMapping("/items/{itemId}/stock/reduce")
+    public CustomResponse reduceStock(
+            @PathVariable(name = "itemId") Long itemId,
+            @Valid @RequestBody ReduceStockRequest request,
+            @AuthenticationPrincipal UserPrincipal principal
+    ) {
+        itemService.reduceStock(itemId, request, principal.getUsername());
         return CustomResponse.OK();
     }
 }
