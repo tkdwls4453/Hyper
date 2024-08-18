@@ -3,6 +3,7 @@ package com.dev.hyper.item;
 import com.dev.hyper.common.WithMockCustomUser;
 import com.dev.hyper.item.request.AddStockRequest;
 import com.dev.hyper.item.request.CreateItemRequest;
+import com.dev.hyper.item.request.ReduceStockRequest;
 import com.dev.hyper.item.request.UpdateItemRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -141,6 +142,51 @@ class ItemControllerTest {
 
             // Expected
             mockMvc.perform(patch("/api/products/items/{itemId}/stock/add", 1L)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request))
+                            .with(csrf())
+                    )
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.message").value("OK"))
+                    .andDo(print());
+        }
+    }
+
+    @Nested
+    @DisplayName("아이템 재고 감소 테스트")
+    @WithMockCustomUser
+    class reduceStock{
+        @Test
+        @DisplayName("재고 감소량이 음수일 경우, 400 에러를 반환한다.")
+        void test1() throws Exception {
+            // Given
+            ReduceStockRequest request = ReduceStockRequest.builder()
+                    .quantity(-5)
+                    .build();
+
+
+            // Expected
+            mockMvc.perform(patch("/api/products/items/{itemId}/stock/reduce", 1L)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request))
+                            .with(csrf())
+                    )
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.message").value("재고 감소량은 양수만 가능합니다."))
+                    .andDo(print());
+        }
+
+        @Test
+        @DisplayName("아이템 재고 감소 성공시, 200 OK를 반환한다.")
+        void test1000() throws Exception {
+            // Given
+            ReduceStockRequest request = ReduceStockRequest.builder()
+                    .quantity(5)
+                    .build();
+
+
+            // Expected
+            mockMvc.perform(patch("/api/products/items/{itemId}/stock/reduce", 1L)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request))
                             .with(csrf())
