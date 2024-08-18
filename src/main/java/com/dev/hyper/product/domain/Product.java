@@ -1,5 +1,6 @@
 package com.dev.hyper.product.domain;
 
+import com.dev.hyper.category.Category;
 import com.dev.hyper.common.BaseEntity;
 import com.dev.hyper.item.Item;
 import com.dev.hyper.product.request.UpdateProductRequest;
@@ -40,6 +41,9 @@ public class Product extends BaseEntity {
 
     @OneToMany(mappedBy = "product")
     private List<Item> items = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Category category;
 
 
     @Builder
