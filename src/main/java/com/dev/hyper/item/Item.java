@@ -47,4 +47,8 @@ public class Item extends BaseEntity {
         this.size = request.size();
         this.stock = request.stock();
     }
+
+    public void addStock(int quantity) {
+        this.stock += quantity;
+    }
 }

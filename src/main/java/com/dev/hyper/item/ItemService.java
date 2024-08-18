@@ -3,6 +3,7 @@ package com.dev.hyper.item;
 import com.dev.hyper.common.error.CustomErrorException;
 import com.dev.hyper.common.error.ErrorCode;
 import com.dev.hyper.item.repository.ItemRepository;
+import com.dev.hyper.item.request.AddStockRequest;
 import com.dev.hyper.item.request.CreateItemRequest;
 import com.dev.hyper.item.request.UpdateItemRequest;
 import com.dev.hyper.item.response.ItemResponse;
@@ -88,5 +89,19 @@ public class ItemService {
         }
 
         itemRepository.deleteById(itemId);
+    }
+
+    public void addStock(Long itemId, AddStockRequest request, String email) {
+        Item item = itemRepository.findById(itemId).orElseThrow(
+                () -> {
+                    throw new CustomErrorException(ErrorCode.ITEM_NOT_FOUND_ERROR);
+                }
+        );
+
+        if(!itemRepository.existsByIdAndUserEmail(itemId, email)){
+            throw new CustomErrorException(ErrorCode.ITEM_PERMISSION_ERROR);
+        }
+
+        item.addStock(request.quantity());
     }
 }

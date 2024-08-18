@@ -2,6 +2,7 @@ package com.dev.hyper.item;
 
 import com.dev.hyper.auth.dto.UserPrincipal;
 import com.dev.hyper.common.response.CustomResponse;
+import com.dev.hyper.item.request.AddStockRequest;
 import com.dev.hyper.item.request.CreateItemRequest;
 import com.dev.hyper.item.request.UpdateItemRequest;
 import com.dev.hyper.item.response.ItemResponse;
@@ -57,6 +58,16 @@ public class ItemController {
             @AuthenticationPrincipal UserPrincipal principal
     ){
         itemService.deleteItem(itemId, principal.getUsername());
+        return CustomResponse.OK();
+    }
+
+    @PatchMapping("/items/{itemId}/stock/add")
+    public CustomResponse addStock(
+            @PathVariable(name = "itemId") Long itemId,
+            @RequestBody AddStockRequest request,
+            @AuthenticationPrincipal UserPrincipal principal
+    ) {
+        itemService.addStock(itemId, request, principal.getUsername());
         return CustomResponse.OK();
     }
 }
