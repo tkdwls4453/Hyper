@@ -131,7 +131,7 @@ class ItemControllerTest {
     @WithMockCustomUser
     class addStock{
         @Test
-        @DisplayName("아이템 재고 추가 성공시, 200 OK를 반환한다..")
+        @DisplayName("아이템 재고 추가 성공시, 200 OK를 반환한다.")
         void test1() throws Exception {
             // Given
             AddStockRequest request = AddStockRequest.builder()
