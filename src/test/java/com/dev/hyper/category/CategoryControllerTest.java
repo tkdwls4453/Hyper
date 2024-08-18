@@ -1,6 +1,7 @@
 package com.dev.hyper.category;
 
 import com.dev.hyper.category.request.CreateCategoryRequest;
+import com.dev.hyper.category.request.UpdateCategoryRequest;
 import com.dev.hyper.common.WithMockCustomUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -11,10 +12,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CategoryController.class)
 class CategoryControllerTest {
@@ -40,13 +41,13 @@ class CategoryControllerTest {
                     .build();
 
             // Expected
-            mockMvc.perform(MockMvcRequestBuilders.post("/api/categories")
+            mockMvc.perform(post("/api/categories")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request))
                             .with(csrf())
                     )
-                    .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                    .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("카테고리 이름은 필수입니다."));
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.message").value("카테고리 이름은 필수입니다."));
         }
 
         @Test
@@ -59,14 +60,39 @@ class CategoryControllerTest {
                     .build();
 
             // Expected
-            mockMvc.perform(MockMvcRequestBuilders.post("/api/categories")
+            mockMvc.perform(post("/api/categories")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request))
                             .with(csrf())
                     )
-                    .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("OK"));
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.message").value("OK"));
 
+        }
+    }
+
+    @Nested
+    @WithMockCustomUser(role = "ADMIN")
+    @DisplayName("카테고리 수정 테스트")
+    class updateCategory{
+
+        @Test
+        @DisplayName("카테고리를 성공적으로 수정하면 200 OK를 반환한다.")
+        void test() throws Exception {
+            // Given
+            UpdateCategoryRequest request = UpdateCategoryRequest.builder()
+                    .name("update")
+                    .parentName("parent")
+                    .build();
+
+            // Expected
+            mockMvc.perform(patch("/api/categories/{categoryId}", 1L)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request))
+                            .with(csrf())
+                    )
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.message").value("OK"));
         }
     }
 }

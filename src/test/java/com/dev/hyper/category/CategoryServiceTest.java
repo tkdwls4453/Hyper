@@ -1,7 +1,9 @@
 package com.dev.hyper.category;
 
 import com.dev.hyper.category.request.CreateCategoryRequest;
+import com.dev.hyper.category.request.UpdateCategoryRequest;
 import com.dev.hyper.common.error.CustomErrorException;
+import org.hibernate.sql.Update;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -77,6 +79,92 @@ class CategoryServiceTest {
 
             assertThat(result).isNotNull();
             assertThat(result.name).isEqualTo("child");
+            assertThat(result.parent).isEqualTo(savedParentCategory);
+        }
+    }
+
+    @Nested
+    @DisplayName("카테고리 수정 테스트")
+    class updateCategory{
+
+        @Test
+        @DisplayName("존재하지 않는 카테고리를 수정시, 예외가 발생한다.")
+        void test1(){
+            // Given
+            Category category = Category.builder()
+                    .name("category")
+                    .build();
+
+            Category parent = Category.builder()
+                    .name("parent")
+                    .build();
+
+            Category savedCategory = categoryRepository.save(category);
+
+            UpdateCategoryRequest request = UpdateCategoryRequest.builder()
+                    .name("update")
+                    .parentName("parent")
+                    .build();
+
+            // When
+            assertThatThrownBy(
+                    () -> sut.updateCategory(request, savedCategory.getId() + 100)
+            )
+                    .isInstanceOf(CustomErrorException.class)
+                    .hasMessage("존재하지 않는 카테고리 입니다.");
+        }
+
+        @Test
+        @DisplayName("존재하지 카테고리로 부모를 수정시, 예외가 발생한다.")
+        void test2(){
+            // Given
+            Category category = Category.builder()
+                    .name("category")
+                    .build();
+
+            Category savedCategory = categoryRepository.save(category);
+
+            UpdateCategoryRequest request = UpdateCategoryRequest.builder()
+                    .name("update")
+                    .parentName("parent")
+                    .build();
+
+            // When
+            assertThatThrownBy(
+                    () -> sut.updateCategory(request, savedCategory.getId())
+            )
+                    .isInstanceOf(CustomErrorException.class)
+                    .hasMessage("존재하지 않는 카테고리 입니다.");
+        }
+        @Test
+        @DisplayName("정상적으로 카테고리 수정한다..")
+        void test1000(){
+            // Given
+            Category childCategory = Category.builder()
+                    .name("child")
+                    .build();
+
+            Category parentCategory = Category.builder()
+                    .name("parent")
+                    .build();
+
+            Category savedChildCategory = categoryRepository.save(childCategory);
+            Category savedParentCategory = categoryRepository.save(parentCategory);
+
+
+            UpdateCategoryRequest request = UpdateCategoryRequest.builder()
+                    .name("update")
+                    .parentName("parent")
+                    .build();
+
+            // When
+            sut.updateCategory(request, savedChildCategory.getId());
+
+            // Then
+            Category result = categoryRepository.findByName("update").orElse(null);
+
+            assertThat(result).isNotNull();
+            assertThat(result.name).isEqualTo("update");
             assertThat(result.parent).isEqualTo(savedParentCategory);
         }
     }
