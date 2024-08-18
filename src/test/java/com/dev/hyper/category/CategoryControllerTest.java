@@ -74,11 +74,11 @@ class CategoryControllerTest {
     @Nested
     @WithMockCustomUser(role = "ADMIN")
     @DisplayName("카테고리 수정 테스트")
-    class updateCategory{
+    class updateCategory {
 
         @Test
         @DisplayName("카테고리를 성공적으로 수정하면 200 OK를 반환한다.")
-        void test() throws Exception {
+        void test1000() throws Exception {
             // Given
             UpdateCategoryRequest request = UpdateCategoryRequest.builder()
                     .name("update")
@@ -89,6 +89,25 @@ class CategoryControllerTest {
             mockMvc.perform(patch("/api/categories/{categoryId}", 1L)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request))
+                            .with(csrf())
+                    )
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.message").value("OK"));
+        }
+    }
+
+    @Nested
+    @WithMockCustomUser(role = "ADMIN")
+    class deleteCategory{
+        @Test
+        @DisplayName("카테고리를 성공적으로 삭제하면 200 OK 를 반환한다.")
+        void test1000() throws Exception{
+            // Given
+            Long id = 1L;
+
+            // Expected
+            mockMvc.perform(delete("/api/categories/{categoryId}", id)
+                            .contentType(MediaType.APPLICATION_JSON)
                             .with(csrf())
                     )
                     .andExpect(status().isOk())

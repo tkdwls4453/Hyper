@@ -168,4 +168,44 @@ class CategoryServiceTest {
             assertThat(result.parent).isEqualTo(savedParentCategory);
         }
     }
+
+    @Nested
+    @DisplayName("카테고리 삭제 테스트")
+    class deleteCategory {
+
+        @Test
+        @DisplayName("존재하지 않는 카테고리를 삭제시, 예외가 발생한다.")
+        void test1(){
+            // Given
+
+            // Expected
+            assertThatThrownBy(
+                    () -> {
+                        sut.deleteCategory(1L);
+                    }
+            )
+                    .isInstanceOf(CustomErrorException.class)
+                    .hasMessage("존재하지 않는 카테고리 입니다.");
+
+
+        }
+
+        @Test
+        @DisplayName("카테고리를 정상적으로 삭제한다.")
+        void test1000(){
+            // Given
+            Category category = Category.builder()
+                    .name("category")
+                    .build();
+
+            Category savedCategory = categoryRepository.save(category);
+
+            // When
+            sut.deleteCategory(savedCategory.getId());
+
+            // Then
+            Category result = categoryRepository.findById(savedCategory.getId()).orElse(null);
+            assertThat(result).isNull();
+        }
+    }
 }
