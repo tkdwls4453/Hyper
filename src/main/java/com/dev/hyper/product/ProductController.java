@@ -36,4 +36,13 @@ public class ProductController {
         return CustomResponse.OK();
     }
 
+    @DeleteMapping("/{id}")
+    public CustomResponse deleteProduct(
+            @PathVariable(name = "id") Long productId,
+            @AuthenticationPrincipal UserPrincipal userPrincipal
+    ) {
+        productService.deleteProduct(productId, userPrincipal.getUsername());
+        return CustomResponse.OK();
+    }
+
 }

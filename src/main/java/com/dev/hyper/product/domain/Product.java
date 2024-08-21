@@ -66,4 +66,8 @@ public class Product extends BaseEntity {
         this.name = request.name();
         this.description = request.description();
     }
+
+    public void updateCategory(Category category) {
+        this.category = category;
+    }
 }

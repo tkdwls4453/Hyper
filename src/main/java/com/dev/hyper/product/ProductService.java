@@ -1,5 +1,7 @@
 package com.dev.hyper.product;
 
+import com.dev.hyper.category.Category;
+import com.dev.hyper.category.repository.CategoryRepository;
 import com.dev.hyper.common.error.CustomErrorException;
 import com.dev.hyper.common.error.ErrorCode;
 import com.dev.hyper.product.domain.Product;
@@ -20,6 +22,8 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
+
+    private final CategoryRepository categoryRepository;
     public void createProduct(CreateProductRequest request, String email) {
         Product product = request.toEntity();
 
@@ -32,8 +36,18 @@ public class ProductService {
 
         Store store = user.getStore();
 
+        if (request.category() != null) {
+            Category category = categoryRepository.findByName(request.category()).orElseThrow(
+                    () -> {
+                        throw new CustomErrorException(ErrorCode.CATEGORY_NOT_FOUND_ERROR);
+                    }
+            );
+            product.updateCategory(category);
+        }
+
         product.updateUser(user);
         product.updateStore(store);
+
 
         productRepository.save(product);
     }
@@ -42,7 +56,7 @@ public class ProductService {
         User user = userRepository.findByEmail(email).orElse(null);
 
         if (!user.getRole().equals(Role.SELLER)) {
-            throw new CustomErrorException(ErrorCode.PRODUCT_UPDATE_PERMISSION_ERROR);
+            throw new CustomErrorException(ErrorCode.PRODUCT_PERMISSION_ERROR);
         }
 
         Product product = productRepository.findById(productId).orElseThrow(
@@ -51,7 +65,32 @@ public class ProductService {
                 }
         );
 
+        if (request.category() != null) {
+            Category category = categoryRepository.findByName(request.category()).orElseThrow(
+                    () -> {
+                        throw new CustomErrorException(ErrorCode.CATEGORY_NOT_FOUND_ERROR);
+                    }
+            );
+            product.updateCategory(category);
+        }
+
         product.updateInfo(request);
 
+    }
+
+    public void deleteProduct(Long productId, String email) {
+        User user = userRepository.findByEmail(email).orElse(null);
+
+        Product product = productRepository.findById(productId).orElseThrow(
+                () -> {
+                    throw new CustomErrorException(ErrorCode.PRODUCT_NOT_FOUND_ERROR);
+                }
+        );
+
+        if (!product.getUser().equals(user)) {
+            throw new CustomErrorException(ErrorCode.PRODUCT_PERMISSION_ERROR);
+        }
+
+        productRepository.delete(product);
     }
 }
