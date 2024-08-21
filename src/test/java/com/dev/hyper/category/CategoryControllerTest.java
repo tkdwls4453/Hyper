@@ -1,8 +1,11 @@
 package com.dev.hyper.category;
 
+import com.dev.hyper.category.controller.CategoryController;
 import com.dev.hyper.category.request.CreateCategoryRequest;
 import com.dev.hyper.category.request.UpdateCategoryRequest;
 import com.dev.hyper.common.WithMockCustomUser;
+import com.dev.hyper.common.config.SecurityConfig;
+import com.dev.hyper.common.util.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -10,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -17,12 +21,15 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@Import(SecurityConfig.class)
 @WebMvcTest(CategoryController.class)
 class CategoryControllerTest {
 
     @MockBean
     private CategoryService categoryService;
 
+    @MockBean
+    private JwtUtil jwtUtil;
     @Autowired
     private MockMvc mockMvc;
 
@@ -50,9 +57,28 @@ class CategoryControllerTest {
                     .andExpect(jsonPath("$.message").value("카테고리 이름은 필수입니다."));
         }
 
+
+        @Test
+        @WithMockCustomUser(role = "SELLER")
+        @DisplayName("어드민이 아닌 유저가 카테고리 생성시, 403 에러를 반환한다.")
+        void test2() throws Exception {
+            // Given
+            CreateCategoryRequest request = CreateCategoryRequest.builder()
+                    .name("category")
+                    .build();
+
+            // Expected
+            mockMvc.perform(post("/api/categories")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request))
+                            .with(csrf())
+                    )
+                    .andExpect(status().isForbidden());
+        }
+
         @Test
         @WithMockCustomUser(role = "ADMIN")
-        @DisplayName("어드민이 아닌 유저가 카테고리 생성시, 403 에러를 반환한다.")
+        @DisplayName("카테고리 생성시, 200 OK 를 반환한다.")
         void test1000() throws Exception {
             // Given
             CreateCategoryRequest request = CreateCategoryRequest.builder()
