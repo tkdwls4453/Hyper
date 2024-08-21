@@ -48,9 +48,10 @@ public class SecurityConfig {
                 .formLogin((auth) -> auth.disable())
                 .httpBasic((auth) -> auth.disable())
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers( "/open-api/**").permitAll()
                         .requestMatchers("/api/stores/**").hasRole("SELLER")
                         .requestMatchers("/api/products/**").hasRole("SELLER")
+                        .requestMatchers("/api/categories/**").hasRole("ADMIN")
+                        .requestMatchers("/open-api/**").permitAll()
                 )
                 .addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class)
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, objectMapper), UsernamePasswordAuthenticationFilter.class)
