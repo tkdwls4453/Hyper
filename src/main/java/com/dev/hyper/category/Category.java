@@ -29,10 +29,14 @@ public class Category extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     Category parent;
-
     @Builder
-    public Category(String name) {
+    public Category(String name, Category parent) {
         this.name = name;
+        this.parent = parent;
+        if (parent != null) {
+            parent.getChildren().add(this);
+        }
+
     }
 
     public void updateParent(Category parentCategory) {

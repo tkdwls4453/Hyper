@@ -1,12 +1,17 @@
 package com.dev.hyper.category;
 
+import com.dev.hyper.category.repository.CategoryRepository;
+import com.dev.hyper.category.repository.CategorySelfJoinResult;
 import com.dev.hyper.category.request.CreateCategoryRequest;
 import com.dev.hyper.category.request.UpdateCategoryRequest;
+import com.dev.hyper.category.response.CategoryResponse;
 import com.dev.hyper.common.error.CustomErrorException;
 import com.dev.hyper.common.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
 
 @Transactional
 @RequiredArgsConstructor
@@ -60,5 +65,36 @@ public class CategoryService {
             throw new CustomErrorException(ErrorCode.CATEGORY_NOT_FOUND_ERROR);
         }
 
+    }
+
+    @Transactional(readOnly = true)
+    public List<CategoryResponse> getCategories() {
+        List<CategorySelfJoinResult> resultList = categoryRepository.findAllSelfJoin();
+
+        Map<String, Set<String>> childrenMap = new HashMap<>();
+        Map<String, String> parentMap = new HashMap<>();
+
+        for (CategorySelfJoinResult result : resultList) {
+            childrenMap.putIfAbsent(result.getName(), new HashSet<>());
+            parentMap.putIfAbsent(result.getName(), result.getParentName());
+
+            if(result.getChildName() != null){
+                childrenMap.get(result.getName()).add(result.getChildName());
+            }
+
+        }
+
+        List<CategoryResponse> result = new ArrayList<>();
+
+        for (String key : parentMap.keySet()) {
+            result.add(CategoryResponse.builder()
+                    .name(key)
+                    .parent(parentMap.get(key))
+                    .children(childrenMap.get(key))
+                    .build()
+            );
+        }
+
+        return result;
     }
 }
