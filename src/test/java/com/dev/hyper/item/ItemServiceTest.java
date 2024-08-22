@@ -7,7 +7,7 @@ import com.dev.hyper.item.request.CreateItemRequest;
 import com.dev.hyper.item.request.ReduceStockRequest;
 import com.dev.hyper.item.request.UpdateItemRequest;
 import com.dev.hyper.item.response.ItemResponse;
-import com.dev.hyper.product.ProductRepository;
+import com.dev.hyper.product.repository.ProductRepository;
 import com.dev.hyper.product.domain.Product;
 import com.dev.hyper.user.domain.Role;
 import com.dev.hyper.user.domain.User;

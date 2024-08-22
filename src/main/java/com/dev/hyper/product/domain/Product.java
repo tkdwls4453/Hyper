@@ -31,6 +31,9 @@ public class Product extends BaseEntity {
     @Column(length = 500)
     private String description;
 
+    @Column(nullable = false)
+    private Integer price;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store;
@@ -47,11 +50,13 @@ public class Product extends BaseEntity {
 
 
     @Builder
-    private Product(String name, String description, Store store, User user) {
+    private Product(String name, String description, int price, Store store, User user, Category category) {
         this.name = name;
         this.description = description;
+        this.price = price;
         this.store = store;
         this.user = user;
+        this.category = category;
     }
 
     public void updateUser(User user) {
@@ -65,5 +70,9 @@ public class Product extends BaseEntity {
     public void updateInfo(UpdateProductRequest request) {
         this.name = request.name();
         this.description = request.description();
+    }
+
+    public void updateCategory(Category category) {
+        this.category = category;
     }
 }

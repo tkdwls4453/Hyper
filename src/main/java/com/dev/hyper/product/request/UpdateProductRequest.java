@@ -7,7 +7,9 @@ import lombok.Builder;
 public record UpdateProductRequest(
     @NotBlank(message = "제품 이름은 필수입니다.")
     String name,
-    String description
+    String description,
+    String category,
+    Integer price
 ){
 
 }
