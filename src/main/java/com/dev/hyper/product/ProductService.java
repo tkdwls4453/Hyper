@@ -5,13 +5,18 @@ import com.dev.hyper.category.repository.CategoryRepository;
 import com.dev.hyper.common.error.CustomErrorException;
 import com.dev.hyper.common.error.ErrorCode;
 import com.dev.hyper.product.domain.Product;
+import com.dev.hyper.product.repository.ProductRepository;
+import com.dev.hyper.product.repository.dto.ProductQueryResult;
 import com.dev.hyper.product.request.CreateProductRequest;
 import com.dev.hyper.product.request.UpdateProductRequest;
+import com.dev.hyper.product.response.ProductResponse;
 import com.dev.hyper.store.domain.Store;
 import com.dev.hyper.user.domain.Role;
 import com.dev.hyper.user.domain.User;
 import com.dev.hyper.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -92,5 +97,9 @@ public class ProductService {
         }
 
         productRepository.delete(product);
+    }
+
+    public Page<ProductResponse> getProducts(Pageable pageable, String sortingCondition, String email) {
+        return productRepository.findAllByUserEmailWithSorting(pageable, sortingCondition, email).map(ProductResponse::from);
     }
 }

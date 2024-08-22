@@ -4,9 +4,13 @@ import com.dev.hyper.auth.dto.UserPrincipal;
 import com.dev.hyper.common.response.CustomResponse;
 import com.dev.hyper.product.request.CreateProductRequest;
 import com.dev.hyper.product.request.UpdateProductRequest;
+import com.dev.hyper.product.response.ProductResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +47,18 @@ public class ProductController {
     ) {
         productService.deleteProduct(productId, userPrincipal.getUsername());
         return CustomResponse.OK();
+    }
+
+    @GetMapping
+    public CustomResponse<Page<ProductResponse>> getProducts(
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
+            @RequestParam(name = "sort") String sortingCondition,
+            @AuthenticationPrincipal UserPrincipal userPrincipal
+    ) {
+
+        return CustomResponse.OK(
+                productService.getProducts(pageable, sortingCondition, userPrincipal.getUsername())
+        );
     }
 
 }
