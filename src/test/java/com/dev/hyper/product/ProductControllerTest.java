@@ -190,4 +190,26 @@ class ProductControllerTest {
                     .andDo(print());
         }
     }
+
+    @Nested
+    @DisplayName("판매자의 제품 조회 테스트")
+    class getProducts{
+        @Test
+        @WithMockCustomUser
+        @DisplayName("정상적으로 제품을 조회하면 200 OK 를 반환한다.")
+        void test1000() throws Exception {
+            // Given
+
+            // Expected
+            mockMvc.perform(get("/api/products")
+                            .param("size", "10")
+                            .param("page", "0")
+                            .param("sort", "latest")
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.message").value("OK"))
+            ;
+        }
+    }
 }

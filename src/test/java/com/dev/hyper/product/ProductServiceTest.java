@@ -4,8 +4,10 @@ import com.dev.hyper.category.Category;
 import com.dev.hyper.category.repository.CategoryRepository;
 import com.dev.hyper.common.error.CustomErrorException;
 import com.dev.hyper.product.domain.Product;
+import com.dev.hyper.product.repository.ProductRepository;
 import com.dev.hyper.product.request.CreateProductRequest;
 import com.dev.hyper.product.request.UpdateProductRequest;
+import com.dev.hyper.product.response.ProductResponse;
 import com.dev.hyper.store.domain.Store;
 import com.dev.hyper.store.repository.StoreRepository;
 import com.dev.hyper.user.domain.Role;
@@ -17,6 +19,8 @@ import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -325,6 +329,60 @@ class ProductServiceTest {
             // Then
             Product result = productRepository.findById(savedProduct.getId()).orElse(null);
             assertThat(result).isNull();
+        }
+    }
+
+    @Nested
+    @DisplayName("판매자가 생성한 제품을 정렬 조건을 적용하여 조회한다.")
+    class getProducts{
+        @Test
+        @DisplayName("가격이 비싼 순서로 제품을 10개 조회한다.")
+        void test1(){
+            // Given
+            User user = User.builder()
+                    .name("user")
+                    .role(Role.SELLER)
+                    .email("test@naver.com")
+                    .password("thisistest412!@")
+                    .build();
+
+            Category category = Category.builder()
+                    .name("category")
+                    .build();
+
+            userRepository.save(user);
+            categoryRepository.save(category);
+
+            for (int i = 1; i <= 100; i++) {
+                productRepository.save(Product.builder()
+                        .name("product" + i)
+                        .description("description")
+                        .price(i * 1000)
+                        .user(user)
+                        .category(category)
+                        .build());
+            }
+
+            PageRequest pageable = PageRequest.of(0, 5);
+            String sortingCondition = "expensive";
+            String email = "test@naver.com";
+
+            // When
+            Page<ProductResponse> result = sut.getProducts(pageable, sortingCondition, email);
+
+            // Then
+            List<ProductResponse> content = result.getContent();
+            long total = result.getTotalElements();
+
+            assertThat(content).hasSize(5)
+                    .extracting("name", "price")
+                    .containsExactly(
+                            Tuple.tuple("product100", "100,000"),
+                            Tuple.tuple("product99", "99,000"),
+                            Tuple.tuple("product98", "98,000"),
+                            Tuple.tuple("product97", "97,000"),
+                            Tuple.tuple("product96", "96,000")
+                    );
         }
     }
 
