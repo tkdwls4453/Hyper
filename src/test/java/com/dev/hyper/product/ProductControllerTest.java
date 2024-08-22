@@ -51,6 +51,7 @@ class ProductControllerTest {
             CreateProductRequest request = CreateProductRequest.builder()
 //                    .name(name)
                     .description(description)
+                    .price(4000)
                     .build();
 
             // Expected
@@ -66,12 +67,34 @@ class ProductControllerTest {
 
         @Test
         @WithMockCustomUser
+        @DisplayName("제품의 가격 정보없이 제품을 생성시 400 에러를 반환한다.")
+        void test2() throws Exception {
+            // Given
+            CreateProductRequest request = CreateProductRequest.builder()
+                    .name(name)
+                    .description(description)
+                    .build();
+
+            // Expected
+            mockMvc.perform(post("/api/products")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request))
+                            .with(csrf())
+                    )
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.message").value("제품 가격은 필수입니다."))
+                    .andDo(print());
+        }
+
+        @Test
+        @WithMockCustomUser
         @DisplayName("정상적으로 제품 생성을 요청하면 200 OK 를 반환합니다.")
         void test1000() throws Exception {
             // Given
             CreateProductRequest request = CreateProductRequest.builder()
                     .name(name)
                     .description(description)
+                    .price(4000)
                     .build();
 
             // Expected
