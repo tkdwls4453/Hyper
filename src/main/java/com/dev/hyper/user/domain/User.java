@@ -1,5 +1,6 @@
 package com.dev.hyper.user.domain;
 
+import com.dev.hyper.address.AddressInfo;
 import com.dev.hyper.common.BaseEntity;
 import com.dev.hyper.product.request.UpdateProductRequest;
 import com.dev.hyper.store.domain.Store;
@@ -7,6 +8,9 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -33,6 +37,10 @@ public class User extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
     private Store store;
+
+    @OneToMany(mappedBy = "user")
+    private List<AddressInfo> addresses = new ArrayList<>();
+
 
     @Builder
     private User(String email, String password, String name, Role role) {

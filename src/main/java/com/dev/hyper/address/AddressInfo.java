@@ -31,6 +31,7 @@ public class AddressInfo extends BaseEntity {
     private String code;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Builder
@@ -40,9 +41,14 @@ public class AddressInfo extends BaseEntity {
         this.addressDetail = addressDetail;
         this.code = code;
         this.user = user;
+
+        if (user != null) {
+            user.getAddresses().add(this);
+        }
     }
 
     public void updateUser(User user) {
         this.user = user;
+        user.getAddresses().add(this);
     }
 }
