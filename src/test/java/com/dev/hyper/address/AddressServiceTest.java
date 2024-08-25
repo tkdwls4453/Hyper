@@ -1,6 +1,8 @@
 package com.dev.hyper.address;
 
 import com.dev.hyper.address.request.RegisterAddressRequest;
+import com.dev.hyper.address.response.AddressResponse;
+import com.dev.hyper.common.WithMockCustomUser;
 import com.dev.hyper.common.error.CustomErrorException;
 import com.dev.hyper.user.domain.Role;
 import com.dev.hyper.user.domain.User;
@@ -36,7 +38,7 @@ class AddressServiceTest {
 
         @Test
         @DisplayName("존재하지 않는 유저로 주소 등록시, 예외를 반환한다.")
-        void test1(){
+        void test1() {
             // Given
             User user = User.builder()
                     .name("test")
@@ -56,8 +58,8 @@ class AddressServiceTest {
 
             // Expected
             assertThatThrownBy(() -> {
-                        sut.registerAddress(request, "user@naver.com");
-                    })
+                sut.registerAddress(request, "user@naver.com");
+            })
                     .isInstanceOf(CustomErrorException.class)
                     .hasMessage("존재하지 않는 유저입니다.")
             ;
@@ -65,7 +67,7 @@ class AddressServiceTest {
 
         @Test
         @DisplayName("정상적으로 주소를 등록시, 데이터베이스에 저장된다.")
-        void test1000(){
+        void test1000() {
             // Given
             User user = User.builder()
                     .name("test")
@@ -97,6 +99,58 @@ class AddressServiceTest {
 
             assertThat(result.get(0).getUser().getEmail()).isEqualTo(user.getEmail());
         }
+    }
 
+    @Nested
+    @DisplayName("모든 주소 조회 테스트")
+    class getAllAddresses {
+        @Test
+        @WithMockCustomUser(role = "BUYER")
+        @DisplayName("유저가 등록한 모든 주소 내용을 조회한다.")
+        void test1000(){
+            // Given
+            User user = User.builder()
+                    .name("test")
+                    .password("test!@w12")
+                    .role(Role.BUYER)
+                    .email("test@naver.com")
+                    .build();
+
+            userRepository.save(user);
+
+            AddressInfo address1 = AddressInfo.builder()
+                    .title("address1")
+                    .address("address")
+                    .addressDetail("address detail")
+                    .user(user)
+                    .code("10342")
+                    .build();
+
+            AddressInfo address2 = AddressInfo.builder()
+                    .title("address2")
+                    .address("address")
+                    .addressDetail("address detail")
+                    .user(user)
+                    .code("10342")
+                    .build();
+
+            AddressInfo address3 = AddressInfo.builder()
+                    .title("address3")
+                    .address("address")
+                    .addressDetail("address detail")
+                    .user(user)
+                    .code("10342")
+                    .build();
+
+            addressRepository.saveAll(List.of(address1, address2, address3));
+
+            // When
+            List<AddressResponse> result = sut.getAllAddresses("test@naver.com");
+
+            // Then
+            assertThat(result).hasSize(3)
+                    .extracting("title")
+                    .containsExactly("address1", "address2", "address3");
+        }
     }
 }

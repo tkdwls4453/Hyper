@@ -52,7 +52,7 @@ class AddressControllerTest {
                     .build();
 
             // Expected
-            mockMvc.perform(post("/api/address")
+            mockMvc.perform(post("/api/addresses")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request))
                             .with(csrf())
@@ -73,7 +73,7 @@ class AddressControllerTest {
                     .build();
 
             // Expected
-            mockMvc.perform(post("/api/address")
+            mockMvc.perform(post("/api/addresses")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request))
                             .with(csrf())
@@ -94,7 +94,7 @@ class AddressControllerTest {
                     .build();
 
             // Expected
-            mockMvc.perform(post("/api/address")
+            mockMvc.perform(post("/api/addresses")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request))
                             .with(csrf())
@@ -115,13 +115,30 @@ class AddressControllerTest {
                     .build();
 
             // Expected
-            mockMvc.perform(post("/api/address")
+            mockMvc.perform(post("/api/addresses")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request))
                             .with(csrf())
                     )
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.message").value("OK"));
+        }
+    }
+
+    @Nested
+    @WithMockCustomUser(role = "BUYER")
+    @DisplayName("주소 조회 테스트")
+    class getAllAddresses{
+        @Test
+        @DisplayName("유저의 모든 주소 조회 성공시 200 OK 를 반환한다.")
+        void test1000() throws Exception {
+            // Expected
+            mockMvc.perform(get("/api/addresses")
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.message").value("OK"))
+                    .andExpect(jsonPath("$.data").isArray());
         }
     }
 }
