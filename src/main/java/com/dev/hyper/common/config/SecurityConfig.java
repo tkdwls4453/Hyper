@@ -50,6 +50,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/api/stores/**").hasRole("SELLER")
                         .requestMatchers("/api/products/**").hasRole("SELLER")
+                        .requestMatchers("/api/addresses/**").hasRole("BUYER")
                         .requestMatchers("/api/categories/**").hasRole("ADMIN")
                         .requestMatchers("/open-api/**").permitAll()
                 )
