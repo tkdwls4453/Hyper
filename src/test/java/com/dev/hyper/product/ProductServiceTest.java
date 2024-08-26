@@ -6,6 +6,7 @@ import com.dev.hyper.common.error.CustomErrorException;
 import com.dev.hyper.product.domain.Product;
 import com.dev.hyper.product.repository.ProductRepository;
 import com.dev.hyper.product.request.CreateProductRequest;
+import com.dev.hyper.product.request.FilterDto;
 import com.dev.hyper.product.request.UpdateProductRequest;
 import com.dev.hyper.product.response.ProductResponse;
 import com.dev.hyper.store.domain.Store;
@@ -382,6 +383,158 @@ class ProductServiceTest {
                             Tuple.tuple("product98", "98,000"),
                             Tuple.tuple("product97", "97,000"),
                             Tuple.tuple("product96", "96,000")
+                    );
+        }
+    }
+
+    @Nested
+    @DisplayName("제품을 검색, 필터링 한다.")
+    class searchProducts {
+        @Test
+        @DisplayName("검색어를 포함한 제품을 조회한다.")
+        void test1() {
+            // Given
+            User user = User.builder()
+                    .name("user")
+                    .role(Role.SELLER)
+                    .email("test@naver.com")
+                    .password("thisistest412!@")
+                    .build();
+
+            Category category = Category.builder()
+                    .name("category")
+                    .build();
+
+            userRepository.save(user);
+            categoryRepository.save(category);
+
+            for (int i = 1; i <= 100; i++) {
+                productRepository.save(Product.builder()
+                        .name("product" + i)
+                        .description("description")
+                        .price(i * 1000)
+                        .user(user)
+                        .category(category)
+                        .build());
+            }
+
+            PageRequest pageable = PageRequest.of(0, 5);
+            String search = "2";
+            // When
+            Page<ProductResponse> result = sut.searchProducts(search, null, null, pageable);
+
+            // Then
+            List<ProductResponse> content = result.getContent();
+            long total = result.getTotalElements();
+
+            assertThat(content).hasSize(5)
+                    .extracting("name", "price")
+                    .containsExactly(
+                            Tuple.tuple("product2", "2,000"),
+                            Tuple.tuple("product12", "12,000"),
+                            Tuple.tuple("product20", "20,000"),
+                            Tuple.tuple("product21", "21,000"),
+                            Tuple.tuple("product22", "22,000")
+                    );
+        }
+
+        @Test
+        @DisplayName("검색어를 포함한 제품을 비싼 순으로 조회한다.")
+        void test2() {
+            // Given
+            User user = User.builder()
+                    .name("user")
+                    .role(Role.SELLER)
+                    .email("test@naver.com")
+                    .password("thisistest412!@")
+                    .build();
+
+            Category category = Category.builder()
+                    .name("category")
+                    .build();
+
+            userRepository.save(user);
+            categoryRepository.save(category);
+
+            for (int i = 1; i <= 100; i++) {
+                productRepository.save(Product.builder()
+                        .name("product" + i)
+                        .description("description")
+                        .price(i * 1000)
+                        .user(user)
+                        .category(category)
+                        .build());
+            }
+
+            PageRequest pageable = PageRequest.of(0, 5);
+            String search = "2";
+            String sort = "expensive";
+            // When
+            Page<ProductResponse> result = sut.searchProducts(search, sort, null, pageable);
+
+            // Then
+            List<ProductResponse> content = result.getContent();
+            long total = result.getTotalElements();
+
+            assertThat(content).hasSize(5)
+                    .extracting("name", "price")
+                    .containsExactly(
+                            Tuple.tuple("product92", "92,000"),
+                            Tuple.tuple("product82", "82,000"),
+                            Tuple.tuple("product72", "72,000"),
+                            Tuple.tuple("product62", "62,000"),
+                            Tuple.tuple("product52", "52,000")
+                    );
+        }
+
+        @Test
+        @DisplayName("검색어를 포함한 제품을 특정 조건을 갖고 비싼 순으로 조회한다.")
+        void test3() {
+            // Given
+            User user = User.builder()
+                    .name("user")
+                    .role(Role.SELLER)
+                    .email("test@naver.com")
+                    .password("thisistest412!@")
+                    .build();
+
+            Category category = Category.builder()
+                    .name("category")
+                    .build();
+
+            userRepository.save(user);
+            categoryRepository.save(category);
+
+            for (int i = 1; i <= 100; i++) {
+                productRepository.save(Product.builder()
+                        .name("product" + i)
+                        .description("description")
+                        .price(i * 1000)
+                        .user(user)
+                        .category(category)
+                        .build());
+            }
+
+            PageRequest pageable = PageRequest.of(0, 5);
+            String search = "2";
+            String sort = "expensive";
+
+            FilterDto filterDto = FilterDto.builder()
+                    .priceRange(List.of(50000,80000))
+                    .build();
+            // When
+            Page<ProductResponse> result = sut.searchProducts(search, sort, filterDto, pageable);
+
+            // Then
+            List<ProductResponse> content = result.getContent();
+            long total = result.getTotalElements();
+
+            assertThat(content).hasSize(3)
+                    .extracting("name", "price")
+                    .containsExactly(
+                            Tuple.tuple("product72", "72,000"),
+                            Tuple.tuple("product62", "62,000"),
+                            Tuple.tuple("product52", "52,000")
                     );
         }
     }
