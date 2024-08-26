@@ -2,10 +2,12 @@ package com.dev.hyper.product.repository.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 @Getter
+@ToString
 public class ProductQueryResult {
     private Long id;
     private String name;

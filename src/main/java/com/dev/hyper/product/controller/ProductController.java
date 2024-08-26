@@ -1,7 +1,8 @@
-package com.dev.hyper.product;
+package com.dev.hyper.product.controller;
 
 import com.dev.hyper.auth.dto.UserPrincipal;
 import com.dev.hyper.common.response.CustomResponse;
+import com.dev.hyper.product.ProductService;
 import com.dev.hyper.product.request.CreateProductRequest;
 import com.dev.hyper.product.request.UpdateProductRequest;
 import com.dev.hyper.product.response.ProductResponse;

@@ -1,13 +1,10 @@
 package com.dev.hyper.product.repository;
 
-import com.dev.hyper.category.QCategory;
-import com.dev.hyper.product.domain.QProduct;
 import com.dev.hyper.product.repository.dto.ProductQueryResult;
 import com.dev.hyper.product.repository.dto.QProductQueryResult;
-import com.dev.hyper.product.response.ProductResponse;
-import com.dev.hyper.user.domain.QUser;
-import com.querydsl.core.QueryResults;
+import com.dev.hyper.product.request.FilterDto;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
@@ -44,7 +41,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository{
                 .join(product.user, user)
                 .join(product.category, category)
                 .where(user.email.eq(email))
-                .orderBy(createCondition(sortingCondition))
+                .orderBy(sortCondition(sortingCondition), product.id.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -59,7 +56,72 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository{
         return new PageImpl<>(content, pageable, total);
     }
 
-    private OrderSpecifier<?> createCondition(String sortingCondition) {
+    @Override
+    public Page<ProductQueryResult> search(String search, String sortingCondition, FilterDto filterDto, Pageable pageable) {
+        List<ProductQueryResult> content = queryFactory
+                .select(
+                        new QProductQueryResult(
+                                product.id,
+                                product.name,
+                                product.description,
+                                category.name,
+                                product.price,
+                                product.createdAt,
+                                product.updatedAt
+                        )
+                )
+                .from(product)
+                .where(
+                        searchContains(search),
+                        categoryEq(filterDto),
+                        priceGoe(filterDto),
+                        priceLoe(filterDto)
+                )
+                .orderBy(sortCondition(sortingCondition), product.id.asc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        long total = queryFactory
+                .select(product)
+                .from(product)
+                .where(
+                        searchContains(search),
+                        categoryEq(filterDto),
+                        priceGoe(filterDto),
+                        priceLoe(filterDto)
+                )
+                .fetchCount();
+
+        return new PageImpl<>(content, pageable, total);
+    }
+
+    private BooleanExpression searchContains(String search) {
+        return search != null ? product.name.contains(search) : null;
+    }
+
+    private BooleanExpression categoryEq(FilterDto filterDto) {
+        if(filterDto == null) return null;
+
+        return filterDto.category() != null ? product.category.name.eq(filterDto.category()) : null;
+    }
+
+    private BooleanExpression priceGoe(FilterDto filterDto) {
+        if(filterDto == null) return null;
+
+        return filterDto.priceRange().get(0) != null ? product.price.goe(filterDto.priceRange().get(0)) : null;
+    }
+
+    private BooleanExpression priceLoe(FilterDto filterDto) {
+        if(filterDto == null) return null;
+
+        return filterDto.priceRange().get(1) != null ? product.price.loe((filterDto.priceRange().get(1))) : null;
+    }
+
+    private OrderSpecifier<?> sortCondition(String sortingCondition) {
+        if (sortingCondition == null) {
+            return product.id.asc();
+        }
         return switch (sortingCondition){
             case "latest" -> product.updatedAt.asc();
             case "oldest" -> product.updatedAt.desc();
