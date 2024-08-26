@@ -8,6 +8,7 @@ import com.dev.hyper.product.domain.Product;
 import com.dev.hyper.product.repository.ProductRepository;
 import com.dev.hyper.product.repository.dto.ProductQueryResult;
 import com.dev.hyper.product.request.CreateProductRequest;
+import com.dev.hyper.product.request.FilterDto;
 import com.dev.hyper.product.request.UpdateProductRequest;
 import com.dev.hyper.product.response.ProductResponse;
 import com.dev.hyper.store.domain.Store;
@@ -19,6 +20,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Transactional
 @AllArgsConstructor
@@ -99,7 +102,13 @@ public class ProductService {
         productRepository.delete(product);
     }
 
+    @Transactional(readOnly = true)
     public Page<ProductResponse> getProducts(Pageable pageable, String sortingCondition, String email) {
         return productRepository.findAllByUserEmailWithSorting(pageable, sortingCondition, email).map(ProductResponse::from);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ProductResponse> searchProducts(String search, String sort, FilterDto filterDto, Pageable pageable) {
+        return productRepository.search(search, sort, filterDto, pageable).map(ProductResponse::from);
     }
 }
