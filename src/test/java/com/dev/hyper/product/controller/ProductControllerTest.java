@@ -3,6 +3,7 @@ package com.dev.hyper.product;
 import com.dev.hyper.common.WithMockCustomUser;
 import com.dev.hyper.common.config.SecurityConfig;
 import com.dev.hyper.common.util.JwtUtil;
+import com.dev.hyper.product.controller.ProductController;
 import com.dev.hyper.product.request.CreateProductRequest;
 import com.dev.hyper.product.request.UpdateProductRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
