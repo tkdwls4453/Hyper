@@ -53,7 +53,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/addresses/**").hasRole("BUYER")
                         .requestMatchers("/api/orders/**").hasRole("BUYER")
                         .requestMatchers("/api/categories/**").hasRole("ADMIN")
-                        .requestMatchers("/open-api/**").permitAll()
+                        .requestMatchers("/open-api/**",  "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+
                 )
                 .addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class)
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, objectMapper), UsernamePasswordAuthenticationFilter.class)
