@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -22,6 +23,8 @@ import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.groups.Tuple.*;
 
 // TODO: properties 를 좀 더 깔끔하게 처리하는 법 찾아보자
+
+@ActiveProfiles("test")
 @SpringBootTest(properties = "JWT_SECRET=lalkwfmawlifawnfoiawnfioawfnafkslgnaw")
 class StoreServiceTest {
 
