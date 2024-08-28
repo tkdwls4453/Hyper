@@ -41,7 +41,7 @@ class CategoryServiceTest {
     class createCategory {
 
         @Test
-        @DisplayName("부모 카테고리로 존재하지 않는 카테고리를 설정하면, 예외가 발생한다.")
+        @DisplayName("부모 카테고리로 존재하지 않는 카테고리를 설정하면 부모 카테고리를 null 로 설정한다.")
         void test1() {
             // Given
             Category parentCategory = Category.builder()
@@ -56,11 +56,14 @@ class CategoryServiceTest {
                     .build();
 
             // When
-            assertThatThrownBy(
-                    () -> sut.createCategory(request)
-            )
-                    .isInstanceOf(CustomErrorException.class)
-                    .hasMessage("존재하지 않는 카테고리 입니다.");
+            sut.createCategory(request);
+
+            // Then
+            Category result = categoryRepository.findByName("child").orElse(null);
+
+            assertThat(result).isNotNull();
+            assertThat(result.name).isEqualTo("child");
+            assertThat(result.parent).isNull();
         }
 
         @Test
