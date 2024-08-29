@@ -101,19 +101,19 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository{
     }
 
     private BooleanExpression categoryEq(FilterDto filterDto) {
-        if(filterDto == null) return null;
+        if(filterDto.category() == null) return null;
 
         return filterDto.category() != null ? product.category.name.eq(filterDto.category()) : null;
     }
 
     private BooleanExpression priceGoe(FilterDto filterDto) {
-        if(filterDto == null) return null;
+        if(filterDto.priceRange() == null) return null;
 
         return filterDto.priceRange().get(0) != null ? product.price.goe(filterDto.priceRange().get(0)) : null;
     }
 
     private BooleanExpression priceLoe(FilterDto filterDto) {
-        if(filterDto == null) return null;
+        if(filterDto.priceRange() == null) return null;
 
         return filterDto.priceRange().get(1) != null ? product.price.loe((filterDto.priceRange().get(1))) : null;
     }
