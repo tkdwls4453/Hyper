@@ -45,7 +45,7 @@ public class CustomResponse<T> {
     public static CustomResponse ERROR(Exception e) {
         return CustomResponse.builder()
                 .returnCode(ErrorCode.SERVER_ERROR.getReturnCode())
-                .message(ErrorCode.SERVER_ERROR.getMessage())
+                .message(e.getLocalizedMessage())
                 .build();
     }
 

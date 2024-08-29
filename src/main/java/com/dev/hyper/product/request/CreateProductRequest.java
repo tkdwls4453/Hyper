@@ -19,6 +19,7 @@ public record CreateProductRequest(
                 return Product.builder()
                         .name(this.name)
                         .description(this.description)
+                        .price(this.price)
                         .build();
         }
 
