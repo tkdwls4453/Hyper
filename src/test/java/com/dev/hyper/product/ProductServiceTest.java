@@ -81,6 +81,7 @@ class ProductServiceTest {
                     .name("product name")
                     .description("product description")
                     .category("category")
+                    .price(10000)
                     .build();
 
             // Expected
@@ -110,6 +111,7 @@ class ProductServiceTest {
                     .name("product name")
                     .description("product description")
                     .category("NO")
+                    .price(10000)
                     .build();
 
             // Expected
@@ -140,6 +142,7 @@ class ProductServiceTest {
                     .name("product name")
                     .description("product description")
                     .category("category")
+                    .price(10000)
                     .build();
 
             // When
@@ -148,9 +151,9 @@ class ProductServiceTest {
             // Then
             List<Product> result = productRepository.findAll();
             assertThat(result).hasSize(1)
-                    .extracting("name", "description")
+                    .extracting("name", "description", "price")
                     .containsExactlyInAnyOrder(
-                            Tuple.tuple("product name", "product description")
+                            Tuple.tuple("product name", "product description", 10000)
                     );
 
             Product product = result.get(0);
