@@ -21,11 +21,8 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     public void createCategory(CreateCategoryRequest request) {
 
-        Category parentCategory = categoryRepository.findByName(request.parentName()).orElseThrow(
-                () -> {
-                    throw new CustomErrorException(ErrorCode.CATEGORY_NOT_FOUND_ERROR);
-                }
-        );
+
+        Category parentCategory = categoryRepository.findByName(request.parentName()).orElse(null);
 
         Category category = Category.builder()
                 .name(request.name())

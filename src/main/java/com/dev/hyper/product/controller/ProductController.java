@@ -75,7 +75,7 @@ public class ProductController {
     @GetMapping
     public CustomResponse<Page<ProductResponse>> getProducts(
             @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
-            @RequestParam(name = "sort") String sortingCondition,
+            @RequestParam(name = "sort", defaultValue = "id") String sortingCondition,
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
 
